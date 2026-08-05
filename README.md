@@ -1,6 +1,6 @@
-# 🛒 NybKart
+# 🛒 ShopKart
 
-NybKart is a React-based e-commerce web application developed to practice and showcase modern front-end development skills. The project focuses on building a responsive shopping experience using reusable React components and modern web development practices.
+ShopKart is a React-based e-commerce web application developed to practice and showcase modern front-end development skills. The project focuses on building a responsive shopping experience using reusable React components and modern web development practices.
 
 ---
 
@@ -35,7 +35,7 @@ NybKart is a React-based e-commerce web application developed to practice and sh
 ## 📂 Project Structure
 
 ```text
-NybKart/
+ShopKart/
 │── public/
 │── src/
 │   ├── Components/
@@ -61,13 +61,13 @@ NybKart/
 ### Clone the Repository
 
 ```bash
-git clone https://github.com/AdithyaRamDarisi/NybKart.git
+git clone https://github.com/AdithyaRamDarisi/ShopKart.git
 ```
 
 ### Navigate to the Project
 
 ```bash
-cd NybKart
+cd ShopKart
 ```
 
 ### Install Dependencies
@@ -118,7 +118,7 @@ npm run dev
 
 ## 🎯 Project Goal
 
-The goal of NybKart is to strengthen React fundamentals while building a real-world e-commerce application. As the project progresses, more advanced features such as Redux Toolkit, authentication, and backend integration will be added.
+The goal of ShopKart is to strengthen React fundamentals while building a real-world e-commerce application. As the project progresses, more advanced features such as Redux Toolkit, authentication, and backend integration will be added.
 
 ---
 

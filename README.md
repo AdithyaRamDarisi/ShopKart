@@ -1,16 +1,145 @@
-# React + Vite
+# 🛒 NybKart
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+NybKart is a React-based e-commerce web application developed to practice and showcase modern front-end development skills. The project focuses on building a responsive shopping experience using reusable React components and modern web development practices.
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## 🚀 Current Features
 
-## React Compiler
+* 🏠 Responsive Home Page
+* 🎯 Hero Section
+* 📦 Product Listing
+* 🛍️ Product Cards
+* ➕ Add to Cart
+* ➖ Remove from Cart
+* 🛒 Cart Page
+* 🔢 Dynamic Cart Item Count
+* 🧭 Navigation using React Router
+* 📱 Responsive User Interface
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+---
 
-## Expanding the ESLint configuration
+## 🛠️ Tech Stack
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+* React.js
+* JavaScript (ES6+)
+* Vite
+* HTML5
+* CSS3
+* React Router DOM
+* Git
+* GitHub
+
+---
+
+## 📂 Project Structure
+
+```text
+NybKart/
+│── public/
+│── src/
+│   ├── Components/
+│   │   ├── Navbar.jsx
+│   │   ├── Hero.jsx
+│   │   ├── Products.jsx
+│   │   ├── ProductCard.jsx
+│   │   └── Cart.jsx
+│   ├── assets/
+│   ├── App.jsx
+│   ├── main.jsx
+│   └── index.css
+│
+├── package.json
+├── vite.config.js
+└── README.md
+```
+
+---
+
+## 📦 Getting Started
+
+### Clone the Repository
+
+```bash
+git clone https://github.com/AdithyaRamDarisi/NybKart.git
+```
+
+### Navigate to the Project
+
+```bash
+cd NybKart
+```
+
+### Install Dependencies
+
+```bash
+npm install
+```
+
+### Start the Development Server
+
+```bash
+npm run dev
+```
+
+---
+
+## 📚 Concepts Practiced
+
+* React Components
+* JSX
+* Props
+* State Management with `useState`
+* Event Handling
+* Conditional Rendering
+* Lists & Keys
+* Component Reusability
+* React Router DOM
+* Responsive Web Design
+
+---
+
+## 🚧 Upcoming Features
+
+* Redux Toolkit Integration
+* Product Search
+* Category Filters
+* Product Details Page
+* Quantity Increase/Decrease
+* Cart Persistence using Local Storage
+* Wishlist
+* User Authentication
+* Checkout Page
+* Backend API Integration
+* Payment Gateway
+* Dark Mode
+
+---
+
+## 🎯 Project Goal
+
+The goal of NybKart is to strengthen React fundamentals while building a real-world e-commerce application. As the project progresses, more advanced features such as Redux Toolkit, authentication, and backend integration will be added.
+
+---
+
+## 🤝 Contributing
+
+Contributions and suggestions are welcome. Feel free to fork the repository and submit a pull request.
+
+---
+
+## 📄 License
+
+This project is created for learning and portfolio purposes.
+
+---
+
+## 👨‍💻 Author
+
+**Adithya Ram Darisi**
+
+GitHub: https://github.com/AdithyaRamDarisi
+
+---
+
+⭐ If you found this project helpful, consider giving it a **Star** on GitHub!

@@ -6,7 +6,7 @@ function Navbar({ cart = [] }) {
 
   return (
     <nav>
-      <h2>NybKart</h2>
+      <h2>ShopKart</h2>
 
       <ul>
         <li>Home</li>

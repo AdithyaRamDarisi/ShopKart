@@ -8,7 +8,9 @@ function Hero() {
   return (
     <section className="hero">
       <div className="hero-content">
-        <p className="hero-subtitle">WELCOME TO NYBKART</p>
+        <h2 className="hero-subtitle">
+          WELCOME TO SHOPKART
+        </h2>
 
         <h1>
           Smart Shopping
@@ -17,10 +19,12 @@ function Hero() {
         </h1>
 
         <p className="hero-description">
-          <h3>Explore top-quality products for every lifestyle.</h3> 
+          Explore top-quality products for every lifestyle.
         </p>
 
-        <button onClick={handleShopNow}>Shop Now</button>
+        <button onClick={handleShopNow}>
+          Explore Now
+        </button>
       </div>
     </section>
   );

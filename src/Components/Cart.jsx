@@ -6,53 +6,110 @@ function Cart({
   onCheckout,
 }) {
   const totalPrice = cart.reduce(
-    (total, product) => total + product.price * product.quantity,
+    (total, product) =>
+      total +
+      product.offerPrice * product.quantity,
     0
   );
 
   return (
     <section className="cart">
+
       <h2>Your Cart</h2>
 
       {cart.length === 0 ? (
-        <p>Your cart is empty.</p>
-      ) : (
-        <div>
-          {cart.map((product) => (
-            <div key={product.id} className="cart-item">
-              <h3>{product.name}</h3>
 
-              <p>₹{product.price}</p>
+        <p>Your cart is empty.</p>
+
+      ) : (
+
+        <div>
+
+          {cart.map((product) => (
+
+            <div
+              key={product.id}
+              className="cart-item"
+            >
+
+              <div className="cart-product-info">
+
+                <h3>{product.name}</h3>
+
+                <div className="cart-prices">
+
+                  <span className="cart-original-price">
+                    ₹{product.price}
+                  </span>
+
+                  <span className="cart-offer-price">
+                    ₹{product.offerPrice}
+                  </span>
+
+                </div>
+
+              </div>
 
               <div className="quantity-controls">
-                <button onClick={() => decreaseQuantity(product.id)}>
+
+                <button
+                  onClick={() =>
+                    decreaseQuantity(product.id)
+                  }
+                >
                   −
                 </button>
 
-                <span>{product.quantity}</span>
+                <span>
+                  {product.quantity}
+                </span>
 
-                <button onClick={() => increaseQuantity(product.id)}>
+                <button
+                  onClick={() =>
+                    increaseQuantity(product.id)
+                  }
+                >
                   +
                 </button>
+
               </div>
 
-              <p>
-                Subtotal: ₹{product.price * product.quantity}
+              <p className="cart-subtotal">
+
+                Subtotal: ₹
+                {product.offerPrice *
+                  product.quantity}
+
               </p>
 
-              <button onClick={() => removeFromCart(product.id)}>
+              <button
+                className="remove-button"
+                onClick={() =>
+                  removeFromCart(product.id)
+                }
+              >
                 Remove
               </button>
+
             </div>
+
           ))}
 
-          <h3>Total: ₹{totalPrice}</h3>
+          <h3 className="cart-total">
+            Total: ₹{totalPrice}
+          </h3>
 
-          <button onClick={onCheckout}>
+          <button
+            className="checkout-button"
+            onClick={onCheckout}
+          >
             Checkout
           </button>
+
         </div>
+
       )}
+
     </section>
   );
 }

@@ -1,6 +1,10 @@
 import { useState } from "react";
 
-function Checkout({ cart, clearCart, onOrderPlaced }) {
+function Checkout({
+  cart,
+  clearCart,
+  onOrderPlaced,
+}) {
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -9,7 +13,9 @@ function Checkout({ cart, clearCart, onOrderPlaced }) {
   });
 
   const totalPrice = cart.reduce(
-    (total, product) => total + product.price * product.quantity,
+    (total, product) =>
+      total +
+      product.offerPrice * product.quantity,
     0
   );
 
@@ -35,13 +41,10 @@ function Checkout({ cart, clearCart, onOrderPlaced }) {
       return;
     }
 
-    // Save the order total before clearing the cart
     const finalTotal = totalPrice;
 
-    // Clear the cart
     clearCart();
 
-    // Send order details back to App.jsx
     onOrderPlaced({
       name: formData.name,
       total: finalTotal,
@@ -50,9 +53,14 @@ function Checkout({ cart, clearCart, onOrderPlaced }) {
 
   return (
     <section className="checkout">
+
       <h2>Checkout</h2>
 
-      <form className="checkout-form" onSubmit={handleSubmit}>
+      <form
+        className="checkout-form"
+        onSubmit={handleSubmit}
+      >
+
         <h3>Customer Details</h3>
 
         <input
@@ -90,18 +98,47 @@ function Checkout({ cart, clearCart, onOrderPlaced }) {
         <h3>Order Summary</h3>
 
         {cart.map((product) => (
-          <p key={product.id}>
-            {product.name} × {product.quantity} — ₹
-            {product.price * product.quantity}
-          </p>
+
+          <div
+            key={product.id}
+            className="checkout-product"
+          >
+
+            <p>
+              {product.name} ×{" "}
+              {product.quantity}
+            </p>
+
+            <p>
+
+              <span className="checkout-original-price">
+                ₹{product.price *
+                  product.quantity}
+              </span>
+
+              {" "}
+
+              <strong>
+                ₹{product.offerPrice *
+                  product.quantity}
+              </strong>
+
+            </p>
+
+          </div>
+
         ))}
 
-        <h3>Total: ₹{totalPrice}</h3>
+        <h3>
+          Total: ₹{totalPrice}
+        </h3>
 
         <button type="submit">
           Place Order
         </button>
+
       </form>
+
     </section>
   );
 }

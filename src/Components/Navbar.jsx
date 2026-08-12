@@ -1,3 +1,5 @@
+import { Link } from "react-router-dom";
+
 function Navbar({ cart = [] }) {
   const cartCount = cart.reduce(
     (total, product) => total + product.quantity,
@@ -5,17 +7,40 @@ function Navbar({ cart = [] }) {
   );
 
   return (
-    <nav>
-      <h2>ShopKart</h2>
+    <nav className="navbar">
 
-      <ul>
-        <li>Home</li>
-        <li>Products</li>
-        <li className="nav-cart">
-          Cart <span>({cartCount})</span>
+      <Link to="/" className="navbar-logo">
+        ShopKart
+      </Link>
+
+      <ul className="navbar-links">
+
+        <li>
+          <Link to="/">
+            Home
+          </Link>
         </li>
-        <li>Login</li>
+
+        <li>
+          <Link to="/#products">
+            Products
+          </Link>
+        </li>
+
+        <li className="nav-cart">
+          <Link to="/#cart">
+            Cart <span>({cartCount})</span>
+          </Link>
+        </li>
+
+        <li>
+          <Link to="/login">
+            Login
+          </Link>
+        </li>
+
       </ul>
+
     </nav>
   );
 }

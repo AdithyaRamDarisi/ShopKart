@@ -7,6 +7,7 @@ import Products from "./Components/Products";
 import Cart from "./Components/Cart";
 import Checkout from "./Components/Checkout";
 import ProductDetails from "./Components/ProductDetails";
+import Login from "./Components/Login";
 
 function App() {
   const [cart, setCart] = useState(() => {
@@ -112,14 +113,12 @@ function App() {
   return (
     <div>
 
-      {/* Navbar stays visible on every page */}
+      {/* Navbar */}
       <Navbar cart={cart} />
 
       <Routes>
 
-        {/* =========================
-            HOME PAGE
-        ========================= */}
+        {/* HOME PAGE */}
         <Route
           path="/"
           element={
@@ -129,21 +128,25 @@ function App() {
               <Products
                 addToCart={addToCart}
               />
-
-              <Cart
-                cart={cart}
-                increaseQuantity={increaseQuantity}
-                decreaseQuantity={decreaseQuantity}
-                removeFromCart={removeFromCart}
-                onCheckout={startCheckout}
-              />
             </>
           }
         />
 
-        {/* =========================
-            PRODUCT DETAILS PAGE
-        ========================= */}
+        {/* CART PAGE */}
+        <Route
+          path="/cart"
+          element={
+            <Cart
+              cart={cart}
+              increaseQuantity={increaseQuantity}
+              decreaseQuantity={decreaseQuantity}
+              removeFromCart={removeFromCart}
+              onCheckout={startCheckout}
+            />
+          }
+        />
+
+        {/* PRODUCT DETAILS PAGE */}
         <Route
           path="/product/:id"
           element={
@@ -153,11 +156,15 @@ function App() {
           }
         />
 
+        {/* LOGIN PAGE */}
+        <Route
+          path="/login"
+          element={<Login />}
+        />
+
       </Routes>
 
-      {/* =========================
-          CHECKOUT
-      ========================= */}
+      {/* CHECKOUT */}
       {showCheckout && (
         <Checkout
           cart={cart}
@@ -166,9 +173,7 @@ function App() {
         />
       )}
 
-      {/* =========================
-          ORDER SUCCESS
-      ========================= */}
+      {/* ORDER SUCCESS */}
       {orderSuccess && (
         <section className="checkout">
 

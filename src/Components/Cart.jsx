@@ -13,7 +13,7 @@ function Cart({
   );
 
   return (
-    <section className="cart">
+    <section id="cart" className="cart">
 
       <h2>Your Cart</h2>
 

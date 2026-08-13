@@ -104,23 +104,18 @@ function Checkout({
             className="checkout-product"
           >
 
-            <p>
-              {product.name} ×{" "}
-              {product.quantity}
+            <p className="checkout-product-name">
+              {product.name} × {product.quantity}
             </p>
 
-            <p>
+            <p className="checkout-product-price">
 
               <span className="checkout-original-price">
-                ₹{product.price *
-                  product.quantity}
+                ₹{product.price * product.quantity}
               </span>
 
-              {" "}
-
               <strong>
-                ₹{product.offerPrice *
-                  product.quantity}
+                ₹{product.offerPrice * product.quantity}
               </strong>
 
             </p>
@@ -129,7 +124,7 @@ function Checkout({
 
         ))}
 
-        <h3>
+        <h3 className="checkout-total">
           Total: ₹{totalPrice}
         </h3>
 

@@ -7,37 +7,27 @@ function Cart({
 }) {
   const totalPrice = cart.reduce(
     (total, product) =>
-      total +
-      product.offerPrice * product.quantity,
+      total + product.offerPrice * product.quantity,
     0
   );
 
   return (
     <section id="cart" className="cart">
-
       <h2>Your Cart</h2>
 
       {cart.length === 0 ? (
-
         <p>Your cart is empty.</p>
-
       ) : (
-
         <div>
-
           {cart.map((product) => (
-
             <div
               key={product.id}
               className="cart-item"
             >
-
               <div className="cart-product-info">
-
                 <h3>{product.name}</h3>
 
                 <div className="cart-prices">
-
                   <span className="cart-original-price">
                     ₹{product.price}
                   </span>
@@ -45,13 +35,10 @@ function Cart({
                   <span className="cart-offer-price">
                     ₹{product.offerPrice}
                   </span>
-
                 </div>
-
               </div>
 
               <div className="quantity-controls">
-
                 <button
                   onClick={() =>
                     decreaseQuantity(product.id)
@@ -60,9 +47,7 @@ function Cart({
                   −
                 </button>
 
-                <span>
-                  {product.quantity}
-                </span>
+                <span>{product.quantity}</span>
 
                 <button
                   onClick={() =>
@@ -71,15 +56,11 @@ function Cart({
                 >
                   +
                 </button>
-
               </div>
 
               <p className="cart-subtotal">
-
                 Subtotal: ₹
-                {product.offerPrice *
-                  product.quantity}
-
+                {product.offerPrice * product.quantity}
               </p>
 
               <button
@@ -90,9 +71,7 @@ function Cart({
               >
                 Remove
               </button>
-
             </div>
-
           ))}
 
           <h3 className="cart-total">
@@ -105,11 +84,8 @@ function Cart({
           >
             Checkout
           </button>
-
         </div>
-
       )}
-
     </section>
   );
 }

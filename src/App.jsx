@@ -8,9 +8,15 @@ import Cart from "./Components/Cart";
 import Checkout from "./Components/Checkout";
 import ProductDetails from "./Components/ProductDetails";
 import Login from "./Components/Login";
+import OrderHistory from "./Components/OrderHistory";
+import Wishlist from "./Components/Wishlist";
 
 function App() {
   const navigate = useNavigate();
+
+  // =========================
+  // CART STATE
+  // =========================
 
   const [cart, setCart] = useState(() => {
     const savedCart = localStorage.getItem("cart");
@@ -20,10 +26,30 @@ function App() {
       : [];
   });
 
+  // =========================
+  // WISHLIST STATE
+  // =========================
+
+  const [wishlist, setWishlist] = useState(() => {
+    const savedWishlist =
+      localStorage.getItem("wishlist");
+
+    return savedWishlist
+      ? JSON.parse(savedWishlist)
+      : [];
+  });
+
+  // =========================
+  // ORDER SUCCESS STATE
+  // =========================
+
   const [orderSuccess, setOrderSuccess] =
     useState(null);
 
-  // Save cart to localStorage
+  // =========================
+  // SAVE CART
+  // =========================
+
   useEffect(() => {
     localStorage.setItem(
       "cart",
@@ -31,7 +57,21 @@ function App() {
     );
   }, [cart]);
 
-  // Add product to cart
+  // =========================
+  // SAVE WISHLIST
+  // =========================
+
+  useEffect(() => {
+    localStorage.setItem(
+      "wishlist",
+      JSON.stringify(wishlist)
+    );
+  }, [wishlist]);
+
+  // =========================
+  // ADD TO CART
+  // =========================
+
   function addToCart(product) {
     setCart((currentCart) => {
       const existingProduct =
@@ -60,7 +100,10 @@ function App() {
     });
   }
 
-  // Increase quantity
+  // =========================
+  // INCREASE QUANTITY
+  // =========================
+
   function increaseQuantity(id) {
     setCart((currentCart) =>
       currentCart.map((item) =>
@@ -74,7 +117,10 @@ function App() {
     );
   }
 
-  // Decrease quantity
+  // =========================
+  // DECREASE QUANTITY
+  // =========================
+
   function decreaseQuantity(id) {
     setCart((currentCart) =>
       currentCart
@@ -92,7 +138,10 @@ function App() {
     );
   }
 
-  // Remove product
+  // =========================
+  // REMOVE FROM CART
+  // =========================
+
   function removeFromCart(id) {
     setCart((currentCart) =>
       currentCart.filter(
@@ -101,12 +150,41 @@ function App() {
     );
   }
 
-  // Clear cart
+  // =========================
+  // CLEAR CART
+  // =========================
+
   function clearCart() {
     setCart([]);
   }
 
-  // Start checkout
+  // =========================
+  // TOGGLE WISHLIST
+  // =========================
+
+  function toggleWishlist(product) {
+    setWishlist((currentWishlist) => {
+      const exists = currentWishlist.some(
+        (item) => item.id === product.id
+      );
+
+      if (exists) {
+        return currentWishlist.filter(
+          (item) => item.id !== product.id
+        );
+      }
+
+      return [
+        ...currentWishlist,
+        product,
+      ];
+    });
+  }
+
+  // =========================
+  // START CHECKOUT
+  // =========================
+
   function startCheckout() {
     if (cart.length === 0) {
       alert("Your cart is empty.");
@@ -114,23 +192,67 @@ function App() {
     }
 
     setOrderSuccess(null);
+
     navigate("/checkout");
   }
 
-  // Order placed
+  // =========================
+  // ORDER PLACED
+  // =========================
+
   function handleOrderPlaced(orderDetails) {
-    setOrderSuccess(orderDetails);
+    const orderId =
+      "SK-" +
+      Math.floor(
+        100000 + Math.random() * 900000
+      );
+
+    const newOrder = {
+      ...orderDetails,
+      orderId: orderId,
+      orderDate: new Date().toLocaleString(),
+    };
+
+    // Get existing orders
+    const existingOrders =
+      JSON.parse(
+        localStorage.getItem("orders")
+      ) || [];
+
+    // Save new order
+    localStorage.setItem(
+      "orders",
+      JSON.stringify([
+        ...existingOrders,
+        newOrder,
+      ])
+    );
+
+    // Store current order
+    setOrderSuccess(newOrder);
+
+    // Go to success page
     navigate("/order-success");
   }
 
   return (
     <div>
 
-      <Navbar cart={cart} />
+      {/* =========================
+          NAVBAR
+      ========================= */}
+
+      <Navbar
+        cart={cart}
+        wishlist={wishlist}
+      />
 
       <Routes>
 
-        {/* HOME */}
+        {/* =========================
+            HOME
+        ========================= */}
+
         <Route
           path="/"
           element={
@@ -139,32 +261,52 @@ function App() {
 
               <Products
                 addToCart={addToCart}
+                wishlist={wishlist}
+                toggleWishlist={
+                  toggleWishlist
+                }
               />
             </>
           }
         />
 
-        {/* CART */}
+        {/* =========================
+            CART
+        ========================= */}
+
         <Route
           path="/cart"
           element={
             <Cart
               cart={cart}
-              increaseQuantity={increaseQuantity}
-              decreaseQuantity={decreaseQuantity}
-              removeFromCart={removeFromCart}
+              increaseQuantity={
+                increaseQuantity
+              }
+              decreaseQuantity={
+                decreaseQuantity
+              }
+              removeFromCart={
+                removeFromCart
+              }
               onCheckout={startCheckout}
             />
           }
         />
 
-        {/* CHECKOUT */}
+        {/* =========================
+            CHECKOUT
+        ========================= */}
+
         <Route
           path="/checkout"
           element={
             cart.length === 0 ? (
               <section className="checkout">
-                <h2>Your cart is empty.</h2>
+
+                <h2>
+                  Your cart is empty.
+                </h2>
+
               </section>
             ) : (
               <Checkout
@@ -178,7 +320,10 @@ function App() {
           }
         />
 
-        {/* PRODUCT DETAILS */}
+        {/* =========================
+            PRODUCT DETAILS
+        ========================= */}
+
         <Route
           path="/product/:id"
           element={
@@ -188,34 +333,192 @@ function App() {
           }
         />
 
-        {/* LOGIN */}
+        {/* =========================
+            LOGIN
+        ========================= */}
+
         <Route
           path="/login"
           element={<Login />}
         />
 
-        {/* ORDER SUCCESS */}
+        {/* =========================
+            ORDER HISTORY
+        ========================= */}
+
+        <Route
+          path="/orders"
+          element={
+            <OrderHistory />
+          }
+        />
+
+        {/* =========================
+            WISHLIST
+        ========================= */}
+
+        <Route
+          path="/wishlist"
+          element={
+            <Wishlist
+              wishlist={wishlist}
+              toggleWishlist={
+                toggleWishlist
+              }
+              addToCart={addToCart}
+            />
+          }
+        />
+
+        {/* =========================
+            ORDER SUCCESS
+        ========================= */}
+
         <Route
           path="/order-success"
           element={
             orderSuccess ? (
+
               <section className="checkout">
 
                 <div className="order-success">
 
+                  {/* SUCCESS ICON */}
+
+                  <div className="success-icon">
+                    ✓
+                  </div>
+
+                  {/* SUCCESS TITLE */}
+
                   <h2>
-                    Order Placed Successfully! 🎉
+                    Order Placed
+                    Successfully! 🎉
                   </h2>
+
+                  {/* ORDER ID */}
+
+                  <p className="order-id">
+                    Order ID: #
+                    {orderSuccess.orderId}
+                  </p>
+
+                  {/* ORDER DATE */}
+
+                  <p className="order-date">
+                    Ordered on:{" "}
+                    {orderSuccess.orderDate}
+                  </p>
+
+                  {/* CUSTOMER NAME */}
 
                   <p>
                     Thank you,{" "}
-                    {orderSuccess.name}.
+                    {orderSuccess.name}!
                   </p>
 
-                  <p>
-                    Your order total was ₹
-                    {orderSuccess.total}.
+                  {/* =========================
+                      ORDER DETAILS
+                  ========================= */}
+
+                  <div className="order-details">
+
+                    <div className="order-detail-row">
+
+                      <span>
+                        Order Total
+                      </span>
+
+                      <strong>
+                        ₹{orderSuccess.total}
+                      </strong>
+
+                    </div>
+
+                    <div className="order-detail-row">
+
+                      <span>
+                        Payment Method
+                      </span>
+
+                      <strong>
+                        {
+                          orderSuccess.paymentMethod
+                        }
+                      </strong>
+
+                    </div>
+
+                  </div>
+
+                  {/* =========================
+                      ORDERED PRODUCTS
+                  ========================= */}
+
+                  <div className="success-products">
+
+                    <h3>
+                      Ordered Products
+                    </h3>
+
+                    {orderSuccess.products?.length >
+                    0 ? (
+
+                      orderSuccess.products.map(
+                        (product) => (
+
+                          <div
+                            key={product.id}
+                            className="success-product"
+                          >
+
+                            <div>
+
+                              <strong>
+                                {product.name}
+                              </strong>
+
+                              <p>
+                                Quantity:{" "}
+                                {
+                                  product.quantity
+                                }
+                              </p>
+
+                            </div>
+
+                            <strong>
+                              ₹
+                              {
+                                product.offerPrice *
+                                product.quantity
+                              }
+                            </strong>
+
+                          </div>
+
+                        )
+                      )
+
+                    ) : (
+
+                      <p>
+                        No product details
+                        available.
+                      </p>
+
+                    )}
+
+                  </div>
+
+                  {/* SUCCESS MESSAGE */}
+
+                  <p className="success-message">
+                    Your order has been
+                    placed successfully.
                   </p>
+
+                  {/* CONTINUE SHOPPING */}
 
                   <button
                     onClick={() => {
@@ -229,10 +532,17 @@ function App() {
                 </div>
 
               </section>
+
             ) : (
+
               <section className="checkout">
-                <h2>No order found.</h2>
+
+                <h2>
+                  No order found.
+                </h2>
+
               </section>
+
             )
           }
         />

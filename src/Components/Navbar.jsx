@@ -63,11 +63,15 @@ function Navbar({
 
       <ul className="navbar-links">
 
+        {/* Home */}
+
         <li>
           <Link to="/">
             Home
           </Link>
         </li>
+
+        {/* Products */}
 
         <li>
           <a
@@ -78,6 +82,8 @@ function Navbar({
           </a>
         </li>
 
+        {/* Cart */}
+
         <li className="nav-cart">
           <Link
             to="/cart"
@@ -87,23 +93,33 @@ function Navbar({
           </Link>
         </li>
 
+        {/* Wishlist */}
+
         <li className="nav-wishlist">
           <Link to="/wishlist">
             ♡ Wishlist ({wishlist.length})
           </Link>
         </li>
 
-        <li>
-          <Link to="/orders">
-            My Orders
-          </Link>
-        </li>
+        {/* Logged In User */}
 
         {user ? (
           <>
+            {/* My Orders */}
+
+            <li className="nav-orders">
+              <Link to="/orders">
+                My Orders
+              </Link>
+            </li>
+
+            {/* Welcome */}
+
             <li className="welcome-user">
               Welcome, {user.username} 👋
             </li>
+
+            {/* Logout */}
 
             <li>
               <button
@@ -116,6 +132,8 @@ function Navbar({
             </li>
           </>
         ) : (
+          /* Login */
+
           <li>
             <Link to="/login">
               Login

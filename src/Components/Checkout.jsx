@@ -1,29 +1,31 @@
 import { useState } from "react";
 
 function Checkout({
-  cart,
-  clearCart,
+  cart = [],
   onOrderPlaced,
 }) {
-  const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    phone: "",
-    address: "",
-  });
-
-  const [paymentMethod, setPaymentMethod] =
-    useState("Cash on Delivery");
+  const [formData, setFormData] =
+    useState({
+      name: "",
+      email: "",
+      phone: "",
+      address: "",
+      paymentMethod: "Cash on Delivery",
+    });
 
   const totalPrice = cart.reduce(
     (total, product) =>
       total +
-      product.offerPrice * product.quantity,
+      product.offerPrice *
+        product.quantity,
     0
   );
 
   function handleChange(event) {
-    const { name, value } = event.target;
+    const {
+      name,
+      value,
+    } = event.target;
 
     setFormData((currentData) => ({
       ...currentData,
@@ -34,58 +36,45 @@ function Checkout({
   function handleSubmit(event) {
     event.preventDefault();
 
-    // Name validation
-    if (formData.name.trim().length < 3) {
+    if (
+      !formData.name ||
+      !formData.email ||
+      !formData.phone ||
+      !formData.address
+    ) {
       alert(
-        "Name must be at least 3 characters."
+        "Please fill in all the details."
       );
+
       return;
     }
 
-    // Email validation
-    const emailPattern =
-      /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const orderProducts =
+      cart.map((product) => ({
+        id: product.id,
+        name: product.name,
+        image: product.image,
+        price: product.price,
+        offerPrice:
+          product.offerPrice,
+        size: product.size || "N/A",
+        quantity:
+          product.quantity,
+      }));
 
-    if (!emailPattern.test(formData.email)) {
-      alert(
-        "Please enter a valid email address."
-      );
-      return;
-    }
-
-    // Phone validation
-    const phonePattern = /^[0-9]{10}$/;
-
-    if (!phonePattern.test(formData.phone)) {
-      alert(
-        "Phone number must contain exactly 10 digits."
-      );
-      return;
-    }
-
-    // Address validation
-    if (formData.address.trim().length < 10) {
-      alert(
-        "Address must be at least 10 characters."
-      );
-      return;
-    }
-
-    const finalTotal = totalPrice;
-
-    // Send complete order information
     onOrderPlaced({
       name: formData.name,
       email: formData.email,
       phone: formData.phone,
       address: formData.address,
-      total: finalTotal,
-      paymentMethod: paymentMethod,
-      products: cart,
-    });
 
-    // Clear cart after order data is captured
-    clearCart();
+      paymentMethod:
+        formData.paymentMethod,
+
+      total: totalPrice,
+
+      products: orderProducts,
+    });
   }
 
   return (
@@ -98,9 +87,9 @@ function Checkout({
         onSubmit={handleSubmit}
       >
 
-        {/* Customer Details */}
-
-        <h3>Customer Details</h3>
+        <h3>
+          Customer Details
+        </h3>
 
         <input
           type="text"
@@ -134,64 +123,22 @@ function Checkout({
           onChange={handleChange}
         />
 
-        {/* Order Summary */}
-
-        <h3>Order Summary</h3>
-
-        {cart.map((product) => (
-          <div
-            key={product.id}
-            className="checkout-product"
-          >
-
-            <p className="checkout-product-name">
-              {product.name} ×{" "}
-              {product.quantity}
-            </p>
-
-            <p className="checkout-product-price">
-
-              <span className="checkout-original-price">
-                ₹
-                {product.price *
-                  product.quantity}
-              </span>
-
-              <strong>
-                ₹
-                {product.offerPrice *
-                  product.quantity}
-              </strong>
-
-            </p>
-
-          </div>
-        ))}
-
-        <h3 className="checkout-total">
-          Total: ₹{totalPrice}
+        <h3>
+          Payment Method
         </h3>
-
-        {/* Payment Method */}
-
-        <h3>Payment Method</h3>
 
         <div className="payment-methods">
 
           <label>
             <input
               type="radio"
-              name="payment"
+              name="paymentMethod"
               value="Cash on Delivery"
               checked={
-                paymentMethod ===
+                formData.paymentMethod ===
                 "Cash on Delivery"
               }
-              onChange={(event) =>
-                setPaymentMethod(
-                  event.target.value
-                )
-              }
+              onChange={handleChange}
             />
 
             Cash on Delivery
@@ -200,16 +147,13 @@ function Checkout({
           <label>
             <input
               type="radio"
-              name="payment"
+              name="paymentMethod"
               value="UPI"
               checked={
-                paymentMethod === "UPI"
+                formData.paymentMethod ===
+                "UPI"
               }
-              onChange={(event) =>
-                setPaymentMethod(
-                  event.target.value
-                )
-              }
+              onChange={handleChange}
             />
 
             UPI
@@ -218,25 +162,66 @@ function Checkout({
           <label>
             <input
               type="radio"
-              name="payment"
-              value="Credit / Debit Card"
+              name="paymentMethod"
+              value="Card"
               checked={
-                paymentMethod ===
-                "Credit / Debit Card"
+                formData.paymentMethod ===
+                "Card"
               }
-              onChange={(event) =>
-                setPaymentMethod(
-                  event.target.value
-                )
-              }
+              onChange={handleChange}
             />
 
-            Credit / Debit Card
+            Card
           </label>
 
         </div>
 
-        {/* Place Order */}
+        <h3>
+          Order Summary
+        </h3>
+
+        <div className="checkout-products">
+
+          {cart.map((product) => (
+
+            <div
+              className="checkout-product"
+              key={`${product.id}-${product.size}`}
+            >
+
+              <div>
+
+                <strong>
+                  {product.name}
+                </strong>
+
+                <p>
+                  Size:{" "}
+                  {product.size || "N/A"}
+                </p>
+
+                <p>
+                  Quantity:{" "}
+                  {product.quantity}
+                </p>
+
+              </div>
+
+              <strong>
+                ₹
+                {product.offerPrice *
+                  product.quantity}
+              </strong>
+
+            </div>
+
+          ))}
+
+        </div>
+
+        <h3>
+          Total: ₹{totalPrice}
+        </h3>
 
         <button type="submit">
           Place Order

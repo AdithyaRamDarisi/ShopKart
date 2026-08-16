@@ -1,9 +1,11 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-function Login() {
+function Login({ setUser }) {
+  const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+
   const [error, setError] = useState("");
 
   const navigate = useNavigate();
@@ -11,8 +13,8 @@ function Login() {
   function handleLogin(e) {
     e.preventDefault();
 
-    if (!email || !password) {
-      setError("Please enter email and password.");
+    if (!username || !email || !password) {
+      setError("Please enter username, email and password.");
       return;
     }
 
@@ -21,7 +23,21 @@ function Login() {
       return;
     }
 
+    const loggedInUser = {
+      username,
+      email,
+      isLoggedIn: true,
+    };
+
+    localStorage.setItem(
+      "user",
+      JSON.stringify(loggedInUser)
+    );
+
+    setUser(loggedInUser);
+
     setError("");
+
     navigate("/");
   }
 
@@ -43,9 +59,10 @@ function Login() {
           </h1>
 
           <p>
-            Login to explore amazing products,
-            discover new collections and enjoy
-            a better shopping experience.
+            Login to explore amazing
+            products, discover new
+            collections and enjoy a
+            better shopping experience.
           </p>
 
         </div>
@@ -60,28 +77,59 @@ function Login() {
 
           <form onSubmit={handleLogin}>
 
+            {/* Username */}
+
             <div className="input-group">
 
-              <label>Email</label>
+              <label>
+                Username
+              </label>
+
+              <input
+                type="text"
+                placeholder="Enter your username"
+                value={username}
+                onChange={(e) =>
+                  setUsername(e.target.value)
+                }
+              />
+
+            </div>
+
+            {/* Email */}
+
+            <div className="input-group">
+
+              <label>
+                Email
+              </label>
 
               <input
                 type="email"
                 placeholder="Enter your email"
                 value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                onChange={(e) =>
+                  setEmail(e.target.value)
+                }
               />
 
             </div>
 
+            {/* Password */}
+
             <div className="input-group">
 
-              <label>Password</label>
+              <label>
+                Password
+              </label>
 
               <input
                 type="password"
                 placeholder="Enter your password"
                 value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                onChange={(e) =>
+                  setPassword(e.target.value)
+                }
               />
 
             </div>
@@ -103,7 +151,10 @@ function Login() {
 
           <p className="login-footer">
             New to ShopKart?
-            <span> Create an account</span>
+            <span>
+              {" "}
+              Create an account
+            </span>
           </p>
 
         </div>

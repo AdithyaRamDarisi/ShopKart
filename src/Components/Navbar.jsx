@@ -1,8 +1,13 @@
-import { Link, useNavigate } from "react-router-dom";
+import {
+  Link,
+  useNavigate,
+} from "react-router-dom";
 
 function Navbar({
   cart = [],
   wishlist = [],
+  user,
+  setUser,
 }) {
   const navigate = useNavigate();
 
@@ -12,11 +17,12 @@ function Navbar({
     0
   );
 
-  const handleProductsClick = (e) => {
+  function handleProductsClick(e) {
     e.preventDefault();
 
-    // If already on Home page
-    if (window.location.pathname === "/") {
+    if (
+      window.location.pathname === "/"
+    ) {
       document
         .getElementById("products")
         ?.scrollIntoView({
@@ -24,10 +30,8 @@ function Navbar({
           block: "start",
         });
     } else {
-      // Go to Home first
       navigate("/");
 
-      // Wait for Home/Products section to render
       setTimeout(() => {
         document
           .getElementById("products")
@@ -37,12 +41,19 @@ function Navbar({
           });
       }, 100);
     }
-  };
+  }
+
+  function handleLogout() {
+    localStorage.removeItem("user");
+
+    setUser(null);
+
+    navigate("/");
+  }
 
   return (
     <nav className="navbar">
 
-      {/* Logo */}
       <Link
         to="/"
         className="navbar-logo"
@@ -50,7 +61,6 @@ function Navbar({
         ShopKart
       </Link>
 
-      {/* Navigation */}
       <ul className="navbar-links">
 
         <li>
@@ -89,11 +99,29 @@ function Navbar({
           </Link>
         </li>
 
-        <li>
-          <Link to="/login">
-            Login
-          </Link>
-        </li>
+        {user ? (
+          <>
+            <li className="welcome-user">
+              Welcome, {user.username} 👋
+            </li>
+
+            <li>
+              <button
+                type="button"
+                className="logout-button"
+                onClick={handleLogout}
+              >
+                Logout
+              </button>
+            </li>
+          </>
+        ) : (
+          <li>
+            <Link to="/login">
+              Login
+            </Link>
+          </li>
+        )}
 
       </ul>
 

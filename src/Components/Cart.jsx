@@ -1,5 +1,5 @@
 function Cart({
-  cart,
+  cart = [],
   increaseQuantity,
   decreaseQuantity,
   removeFromCart,
@@ -7,27 +7,57 @@ function Cart({
 }) {
   const totalPrice = cart.reduce(
     (total, product) =>
-      total + product.offerPrice * product.quantity,
+      total +
+      product.offerPrice *
+        product.quantity,
     0
   );
 
   return (
-    <section id="cart" className="cart">
-      <h2>Your Cart</h2>
+    <section className="cart">
+
+      <h2>Your Cart 🛒</h2>
 
       {cart.length === 0 ? (
-        <p>Your cart is empty.</p>
+
+        <div className="empty-cart">
+          <h3>Your cart is empty.</h3>
+
+          <p>
+            Add some products to your cart.
+          </p>
+        </div>
+
       ) : (
+
         <div>
+
           {cart.map((product) => (
+
             <div
-              key={product.id}
+              key={`${product.id}-${product.size}`}
               className="cart-item"
             >
-              <div className="cart-product-info">
+
+              <img
+                src={product.image}
+                alt={product.name}
+                className="cart-item-image"
+              />
+
+              <div className="cart-item-info">
+
                 <h3>{product.name}</h3>
 
+                <p>
+                  Size:{" "}
+                  <strong>
+                    {product.size || "N/A"}
+                  </strong>
+                </p>
+
                 <div className="cart-prices">
+
                   <span className="cart-original-price">
                     ₹{product.price}
                   </span>
@@ -35,43 +65,64 @@ function Cart({
                   <span className="cart-offer-price">
                     ₹{product.offerPrice}
                   </span>
+
                 </div>
-              </div>
 
-              <div className="quantity-controls">
+                <div className="quantity-controls">
+
+                  <button
+                    type="button"
+                    onClick={() =>
+                      decreaseQuantity(
+                        product.id,
+                        product.size
+                      )
+                    }
+                  >
+                    −
+                  </button>
+
+                  <span>
+                    {product.quantity}
+                  </span>
+
+                  <button
+                    type="button"
+                    onClick={() =>
+                      increaseQuantity(
+                        product.id,
+                        product.size
+                      )
+                    }
+                  >
+                    +
+                  </button>
+
+                </div>
+
+                <p className="cart-subtotal">
+                  Subtotal: ₹
+                  {product.offerPrice *
+                    product.quantity}
+                </p>
+
                 <button
+                  type="button"
+                  className="remove-button"
                   onClick={() =>
-                    decreaseQuantity(product.id)
+                    removeFromCart(
+                      product.id,
+                      product.size
+                    )
                   }
                 >
-                  −
+                  Remove
                 </button>
 
-                <span>{product.quantity}</span>
-
-                <button
-                  onClick={() =>
-                    increaseQuantity(product.id)
-                  }
-                >
-                  +
-                </button>
               </div>
 
-              <p className="cart-subtotal">
-                Subtotal: ₹
-                {product.offerPrice * product.quantity}
-              </p>
-
-              <button
-                className="remove-button"
-                onClick={() =>
-                  removeFromCart(product.id)
-                }
-              >
-                Remove
-              </button>
             </div>
+
           ))}
 
           <h3 className="cart-total">
@@ -79,13 +130,17 @@ function Cart({
           </h3>
 
           <button
+            type="button"
             className="checkout-button"
             onClick={onCheckout}
           >
-            Checkout
+            Proceed to Checkout
           </button>
+
         </div>
+
       )}
+
     </section>
   );
 }

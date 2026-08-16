@@ -53,16 +53,16 @@ function Products({
   // =========================
 
   if (sort === "low-high") {
-    filteredProducts.sort(
-      (a, b) => a.price - b.price
-    );
-  }
+  filteredProducts.sort(
+    (a, b) => a.offerPrice - b.offerPrice
+  );
+}
 
-  if (sort === "high-low") {
-    filteredProducts.sort(
-      (a, b) => b.price - a.price
-    );
-  }
+if (sort === "high-low") {
+  filteredProducts.sort(
+    (a, b) => b.offerPrice - a.offerPrice
+  );
+}
 
   if (sort === "a-z") {
     filteredProducts.sort((a, b) =>

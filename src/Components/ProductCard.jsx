@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 function ProductCard({
@@ -8,35 +9,45 @@ function ProductCard({
 }) {
   const navigate = useNavigate();
 
+  const [selectedSize, setSelectedSize] =
+    useState("");
+
   const isWishlisted = wishlist.some(
     (item) => item.id === product.id
   );
 
-  const handleProductClick = () => {
+  function handleProductClick() {
     navigate(`/product/${product.id}`);
-  };
+  }
 
-  const handleWishlistClick = (e) => {
+  function handleWishlistClick(e) {
     e.stopPropagation();
 
     if (toggleWishlist) {
       toggleWishlist(product);
     }
-  };
+  }
 
-  const handleAddToCart = (e) => {
+  function handleAddToCart(e) {
     e.stopPropagation();
 
-    // Add product to cart
-    addToCart(product);
+    if (!selectedSize) {
+      alert("Please select a size.");
+      return;
+    }
 
-    // Find product image
+    addToCart({
+      ...product,
+      size: selectedSize,
+    });
+
     const productImage =
       e.currentTarget
         .closest(".product-card")
-        ?.querySelector(".product-image-clickable");
+        ?.querySelector(
+          ".product-image-clickable"
+        );
 
-    // Find cart in navbar
     const cartElement =
       document.querySelector(".nav-cart a");
 
@@ -44,14 +55,12 @@ function ProductCard({
       return;
     }
 
-    // Get positions
     const imageRect =
       productImage.getBoundingClientRect();
 
     const cartRect =
       cartElement.getBoundingClientRect();
 
-    // Create flying image
     const flyingImage =
       productImage.cloneNode(true);
 
@@ -59,7 +68,6 @@ function ProductCard({
       "flying-product-image"
     );
 
-    // Starting position
     flyingImage.style.left =
       `${imageRect.left}px`;
 
@@ -72,25 +80,29 @@ function ProductCard({
     flyingImage.style.height =
       `${imageRect.height}px`;
 
-    document.body.appendChild(flyingImage);
+    document.body.appendChild(
+      flyingImage
+    );
 
-    // Calculate movement
     const startX =
-      imageRect.left + imageRect.width / 2;
+      imageRect.left +
+      imageRect.width / 2;
 
     const startY =
-      imageRect.top + imageRect.height / 2;
+      imageRect.top +
+      imageRect.height / 2;
 
     const endX =
-      cartRect.left + cartRect.width / 2;
+      cartRect.left +
+      cartRect.width / 2;
 
     const endY =
-      cartRect.top + cartRect.height / 2;
+      cartRect.top +
+      cartRect.height / 2;
 
     const moveX = endX - startX;
     const moveY = endY - startY;
 
-    // Start animation
     requestAnimationFrame(() => {
       flyingImage.style.transform =
         `translate(${moveX}px, ${moveY}px) scale(0.12) rotate(12deg)`;
@@ -99,11 +111,9 @@ function ProductCard({
       flyingImage.style.borderRadius = "50%";
     });
 
-    // Remove animation element
     setTimeout(() => {
       flyingImage.remove();
 
-      // Cart bounce
       cartElement.classList.add(
         "cart-bounce"
       );
@@ -114,12 +124,13 @@ function ProductCard({
         );
       }, 450);
     }, 700);
-  };
+  }
 
   return (
     <article className="product-card">
 
       {/* Wishlist */}
+
       <button
         type="button"
         className={`wishlist-button ${
@@ -136,6 +147,7 @@ function ProductCard({
       </button>
 
       {/* Product Image */}
+
       <img
         src={product.image}
         alt={product.name}
@@ -144,6 +156,7 @@ function ProductCard({
       />
 
       {/* Product Information */}
+
       <div className="product-info">
 
         <p className="product-category">
@@ -152,7 +165,27 @@ function ProductCard({
 
         <h3>{product.name}</h3>
 
+        {/* Rating */}
+
+        <div className="product-rating">
+
+          <span className="rating-stars">
+            {"★".repeat(product.rating)}
+            {"☆".repeat(5 - product.rating)}
+          </span>
+
+          <span className="rating-number">
+            {product.rating}
+          </span>
+
+          <span className="review-count">
+            ({product.reviews})
+          </span>
+
+        </div>
+
         {/* Prices */}
+
         <div className="product-prices">
 
           <span className="original-price">
@@ -165,7 +198,40 @@ function ProductCard({
 
         </div>
 
-        {/* Add To Cart */}
+        {/* SIZE */}
+
+        <div className="size-selection">
+
+          <p>Select Size:</p>
+
+          <div className="size-options">
+
+            {product.sizes.map((size) => (
+
+              <button
+                key={size}
+                type="button"
+                className={
+                  selectedSize === size
+                    ? "size-button selected"
+                    : "size-button"
+                }
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setSelectedSize(size);
+                }}
+              >
+                {size}
+              </button>
+
+            ))}
+
+          </div>
+
+        </div>
+
+        {/* ADD TO CART */}
+
         <button
           type="button"
           onClick={handleAddToCart}

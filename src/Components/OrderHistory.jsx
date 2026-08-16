@@ -1,99 +1,178 @@
 import { useEffect, useState } from "react";
 
 function OrderHistory() {
-  const [orders, setOrders] = useState([]);
+  const [orders, setOrders] =
+    useState([]);
 
   useEffect(() => {
     const savedOrders =
-      localStorage.getItem("orders");
+      JSON.parse(
+        localStorage.getItem("orders")
+      ) || [];
 
-    if (savedOrders) {
-      setOrders(JSON.parse(savedOrders));
-    }
+    setOrders(savedOrders);
   }, []);
 
   return (
-    <section className="order-history">
+    <section className="orders-page">
 
-      <h2>My Orders</h2>
+      <h2>
+        My Orders 📦
+      </h2>
 
       {orders.length === 0 ? (
-        <p>No orders found.</p>
+
+        <div className="empty-orders">
+
+          <h3>
+            No orders yet.
+          </h3>
+
+          <p>
+            Your completed orders will
+            appear here.
+          </p>
+
+        </div>
+
       ) : (
+
         <div className="orders-list">
 
-          {orders.map((order) => (
-            <div
-              key={order.orderId}
-              className="order-card"
-            >
+          {orders
+            .slice()
+            .reverse()
+            .map((order, index) => (
 
-              <h3>
-                Order ID: #{order.orderId}
-              </h3>
+              <div
+                className="order-card"
+                key={
+                  order.orderId ||
+                  index
+                }
+              >
 
-              <p>
-                Date: {order.orderDate || "N/A"}
-              </p>
+                <div className="order-header">
 
-              <p>
-                Status:{" "}
-                <strong className="order-status">
-                  {order.status || "Order Placed"}
-                </strong>
-              </p>
+                  <div>
 
-              <p>
-                Customer: {order.name}
-              </p>
+                    <h3>
+                      Order #
+                      {order.orderId}
+                    </h3>
 
-              <p>
-                Payment:{" "}
-                {order.paymentMethod}
-              </p>
+                    <p>
+                      {order.orderDate}
+                    </p>
 
-              <h4>
-                Total: ₹{order.total}
-              </h4>
+                  </div>
 
-              <div className="order-products">
+                  <strong>
+                    ₹{order.total}
+                  </strong>
 
-                <h4>
-                  Ordered Products
-                </h4>
+                </div>
 
-                {order.products?.length > 0 ? (
-                  order.products.map(
-                    (product) => (
+                <div className="order-products">
+
+                  {order.products?.map(
+                    (product, productIndex) => (
+
                       <div
-                        key={product.id}
-                        className="order-history-product"
+                        className="order-product"
+                        key={
+                          `${product.id}-${product.size}-${productIndex}`
+                        }
                       >
-                        <span>
-                          {product.name} ×{" "}
-                          {product.quantity}
-                        </span>
+
+                        <img
+                          src={product.image}
+                          alt={product.name}
+                        />
+
+                        <div className="order-product-info">
+
+                          <h4>
+                            {product.name}
+                          </h4>
+
+                          <p>
+                            Size:{" "}
+                            <strong>
+                              {
+                                product.size ||
+                                "N/A"
+                              }
+                            </strong>
+                          </p>
+
+                          <p>
+                            Quantity:{" "}
+                            <strong>
+                              {
+                                product.quantity
+                              }
+                            </strong>
+                          </p>
+
+                        </div>
 
                         <strong>
                           ₹
                           {product.offerPrice *
                             product.quantity}
                         </strong>
+
                       </div>
+
                     )
-                  )
-                ) : (
-                  <p>
-                    No product details available.
-                  </p>
-                )}
+                  )}
+
+                </div>
+
+                <div className="order-summary">
+
+                  <div>
+                    <span>
+                      Customer
+                    </span>
+
+                    <strong>
+                      {order.name}
+                    </strong>
+                  </div>
+
+                  <div>
+                    <span>
+                      Payment
+                    </span>
+
+                    <strong>
+                      {
+                        order.paymentMethod ||
+                        "Not available"
+                      }
+                    </strong>
+                  </div>
+
+                  <div>
+                    <span>
+                      Total
+                    </span>
+
+                    <strong>
+                      ₹{order.total}
+                    </strong>
+                  </div>
+
+                </div>
 
               </div>
 
-            </div>
-          ))}
+            ))}
 
         </div>
+
       )}
 
     </section>

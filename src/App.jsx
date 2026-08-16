@@ -1,5 +1,9 @@
 import { useEffect, useState } from "react";
-import { Routes, Route, useNavigate } from "react-router-dom";
+import {
+  Routes,
+  Route,
+  useNavigate,
+} from "react-router-dom";
 
 import Navbar from "./Components/Navbar";
 import Hero from "./Components/Hero";
@@ -15,11 +19,25 @@ function App() {
   const navigate = useNavigate();
 
   // =========================
-  // CART STATE
+  // USER
+  // =========================
+
+  const [user, setUser] = useState(() => {
+    const savedUser =
+      localStorage.getItem("user");
+
+    return savedUser
+      ? JSON.parse(savedUser)
+      : null;
+  });
+
+  // =========================
+  // CART
   // =========================
 
   const [cart, setCart] = useState(() => {
-    const savedCart = localStorage.getItem("cart");
+    const savedCart =
+      localStorage.getItem("cart");
 
     return savedCart
       ? JSON.parse(savedCart)
@@ -27,24 +45,42 @@ function App() {
   });
 
   // =========================
-  // WISHLIST STATE
+  // WISHLIST
   // =========================
 
-  const [wishlist, setWishlist] = useState(() => {
-    const savedWishlist =
-      localStorage.getItem("wishlist");
+  const [wishlist, setWishlist] =
+    useState(() => {
+      const savedWishlist =
+        localStorage.getItem(
+          "wishlist"
+        );
 
-    return savedWishlist
-      ? JSON.parse(savedWishlist)
-      : [];
-  });
+      return savedWishlist
+        ? JSON.parse(savedWishlist)
+        : [];
+    });
 
   // =========================
-  // ORDER SUCCESS STATE
+  // ORDER SUCCESS
   // =========================
 
   const [orderSuccess, setOrderSuccess] =
     useState(null);
+
+  // =========================
+  // SAVE USER
+  // =========================
+
+  useEffect(() => {
+    if (user) {
+      localStorage.setItem(
+        "user",
+        JSON.stringify(user)
+      );
+    } else {
+      localStorage.removeItem("user");
+    }
+  }, [user]);
 
   // =========================
   // SAVE CART
@@ -74,20 +110,28 @@ function App() {
 
   function addToCart(product) {
     setCart((currentCart) => {
+
       const existingProduct =
         currentCart.find(
-          (item) => item.id === product.id
+          (item) =>
+            item.id === product.id &&
+            item.size === product.size
         );
 
       if (existingProduct) {
-        return currentCart.map((item) =>
-          item.id === product.id
-            ? {
-                ...item,
-                quantity: item.quantity + 1,
-              }
-            : item
+
+        return currentCart.map(
+          (item) =>
+            item.id === product.id &&
+            item.size === product.size
+              ? {
+                  ...item,
+                  quantity:
+                    item.quantity + 1,
+                }
+              : item
         );
+
       }
 
       return [
@@ -101,16 +145,21 @@ function App() {
   }
 
   // =========================
-  // INCREASE QUANTITY
+  // INCREASE
   // =========================
 
-  function increaseQuantity(id) {
+  function increaseQuantity(
+    id,
+    size
+  ) {
     setCart((currentCart) =>
       currentCart.map((item) =>
-        item.id === id
+        item.id === id &&
+        item.size === size
           ? {
               ...item,
-              quantity: item.quantity + 1,
+              quantity:
+                item.quantity + 1,
             }
           : item
       )
@@ -118,17 +167,22 @@ function App() {
   }
 
   // =========================
-  // DECREASE QUANTITY
+  // DECREASE
   // =========================
 
-  function decreaseQuantity(id) {
+  function decreaseQuantity(
+    id,
+    size
+  ) {
     setCart((currentCart) =>
       currentCart
         .map((item) =>
-          item.id === id
+          item.id === id &&
+          item.size === size
             ? {
                 ...item,
-                quantity: item.quantity - 1,
+                quantity:
+                  item.quantity - 1,
               }
             : item
         )
@@ -139,13 +193,20 @@ function App() {
   }
 
   // =========================
-  // REMOVE FROM CART
+  // REMOVE
   // =========================
 
-  function removeFromCart(id) {
+  function removeFromCart(
+    id,
+    size
+  ) {
     setCart((currentCart) =>
       currentCart.filter(
-        (item) => item.id !== id
+        (item) =>
+          !(
+            item.id === id &&
+            item.size === size
+          )
       )
     );
   }
@@ -159,18 +220,22 @@ function App() {
   }
 
   // =========================
-  // TOGGLE WISHLIST
+  // WISHLIST
   // =========================
 
   function toggleWishlist(product) {
     setWishlist((currentWishlist) => {
-      const exists = currentWishlist.some(
-        (item) => item.id === product.id
-      );
+
+      const exists =
+        currentWishlist.some(
+          (item) =>
+            item.id === product.id
+        );
 
       if (exists) {
         return currentWishlist.filter(
-          (item) => item.id !== product.id
+          (item) =>
+            item.id !== product.id
         );
       }
 
@@ -182,7 +247,7 @@ function App() {
   }
 
   // =========================
-  // START CHECKOUT
+  // CHECKOUT
   // =========================
 
   function startCheckout() {
@@ -200,26 +265,33 @@ function App() {
   // ORDER PLACED
   // =========================
 
-  function handleOrderPlaced(orderDetails) {
+  function handleOrderPlaced(
+    orderDetails
+  ) {
     const orderId =
       "SK-" +
       Math.floor(
-        100000 + Math.random() * 900000
+        100000 +
+          Math.random() * 900000
       );
 
     const newOrder = {
       ...orderDetails,
-      orderId: orderId,
-      orderDate: new Date().toLocaleString(),
+
+      // Save complete cart
+      products: [...cart],
+
+      orderId,
+
+      orderDate:
+        new Date().toLocaleString(),
     };
 
-    // Get existing orders
     const existingOrders =
       JSON.parse(
         localStorage.getItem("orders")
       ) || [];
 
-    // Save new order
     localStorage.setItem(
       "orders",
       JSON.stringify([
@@ -228,30 +300,26 @@ function App() {
       ])
     );
 
-    // Store current order
     setOrderSuccess(newOrder);
 
-    // Go to success page
+    clearCart();
+
     navigate("/order-success");
   }
 
   return (
     <div>
 
-      {/* =========================
-          NAVBAR
-      ========================= */}
-
       <Navbar
         cart={cart}
         wishlist={wishlist}
+        user={user}
+        setUser={setUser}
       />
 
       <Routes>
 
-        {/* =========================
-            HOME
-        ========================= */}
+        {/* HOME */}
 
         <Route
           path="/"
@@ -270,9 +338,7 @@ function App() {
           }
         />
 
-        {/* =========================
-            CART
-        ========================= */}
+        {/* CART */}
 
         <Route
           path="/cart"
@@ -288,41 +354,40 @@ function App() {
               removeFromCart={
                 removeFromCart
               }
-              onCheckout={startCheckout}
+              onCheckout={
+                startCheckout
+              }
             />
           }
         />
 
-        {/* =========================
-            CHECKOUT
-        ========================= */}
+        {/* CHECKOUT */}
 
         <Route
           path="/checkout"
           element={
             cart.length === 0 ? (
-              <section className="checkout">
 
+              <section className="checkout">
                 <h2>
                   Your cart is empty.
                 </h2>
-
               </section>
+
             ) : (
+
               <Checkout
                 cart={cart}
-                clearCart={clearCart}
                 onOrderPlaced={
                   handleOrderPlaced
                 }
               />
+
             )
           }
         />
 
-        {/* =========================
-            PRODUCT DETAILS
-        ========================= */}
+        {/* PRODUCT DETAILS */}
 
         <Route
           path="/product/:id"
@@ -333,18 +398,18 @@ function App() {
           }
         />
 
-        {/* =========================
-            LOGIN
-        ========================= */}
+        {/* LOGIN */}
 
         <Route
           path="/login"
-          element={<Login />}
+          element={
+            <Login
+              setUser={setUser}
+            />
+          }
         />
 
-        {/* =========================
-            ORDER HISTORY
-        ========================= */}
+        {/* ORDERS */}
 
         <Route
           path="/orders"
@@ -353,9 +418,7 @@ function App() {
           }
         />
 
-        {/* =========================
-            WISHLIST
-        ========================= */}
+        {/* WISHLIST */}
 
         <Route
           path="/wishlist"
@@ -370,9 +433,7 @@ function App() {
           }
         />
 
-        {/* =========================
-            ORDER SUCCESS
-        ========================= */}
+        {/* ORDER SUCCESS */}
 
         <Route
           path="/order-success"
@@ -383,60 +444,50 @@ function App() {
 
                 <div className="order-success">
 
-                  {/* SUCCESS ICON */}
-
                   <div className="success-icon">
                     ✓
                   </div>
-
-                  {/* SUCCESS TITLE */}
 
                   <h2>
                     Order Placed
                     Successfully! 🎉
                   </h2>
 
-                  {/* ORDER ID */}
-
                   <p className="order-id">
                     Order ID: #
-                    {orderSuccess.orderId}
+                    {
+                      orderSuccess.orderId
+                    }
                   </p>
-
-                  {/* ORDER DATE */}
 
                   <p className="order-date">
                     Ordered on:{" "}
-                    {orderSuccess.orderDate}
+                    {
+                      orderSuccess.orderDate
+                    }
                   </p>
-
-                  {/* CUSTOMER NAME */}
 
                   <p>
                     Thank you,{" "}
                     {orderSuccess.name}!
                   </p>
 
-                  {/* =========================
-                      ORDER DETAILS
-                  ========================= */}
-
                   <div className="order-details">
 
                     <div className="order-detail-row">
-
                       <span>
                         Order Total
                       </span>
 
                       <strong>
-                        ₹{orderSuccess.total}
+                        ₹
+                        {
+                          orderSuccess.total
+                        }
                       </strong>
-
                     </div>
 
                     <div className="order-detail-row">
-
                       <span>
                         Payment Method
                       </span>
@@ -446,14 +497,9 @@ function App() {
                           orderSuccess.paymentMethod
                         }
                       </strong>
-
                     </div>
 
                   </div>
-
-                  {/* =========================
-                      ORDERED PRODUCTS
-                  ========================= */}
 
                   <div className="success-products">
 
@@ -461,66 +507,53 @@ function App() {
                       Ordered Products
                     </h3>
 
-                    {orderSuccess.products?.length >
-                    0 ? (
+                    {orderSuccess.products?.map(
+                      (product) => (
 
-                      orderSuccess.products.map(
-                        (product) => (
+                        <div
+                          key={`${product.id}-${product.size}`}
+                          className="success-product"
+                        >
 
-                          <div
-                            key={product.id}
-                            className="success-product"
-                          >
-
-                            <div>
-
-                              <strong>
-                                {product.name}
-                              </strong>
-
-                              <p>
-                                Quantity:{" "}
-                                {
-                                  product.quantity
-                                }
-                              </p>
-
-                            </div>
+                          <div>
 
                             <strong>
-                              ₹
+                              {product.name}
+                            </strong>
+
+                            <p>
+                              Size:{" "}
                               {
-                                product.offerPrice *
+                                product.size
+                              }
+                            </p>
+
+                            <p>
+                              Quantity:{" "}
+                              {
                                 product.quantity
                               }
-                            </strong>
+                            </p>
 
                           </div>
 
-                        )
+                          <strong>
+                            ₹
+                            {
+                              product.offerPrice *
+                              product.quantity
+                            }
+                          </strong>
+
+                        </div>
+
                       )
-
-                    ) : (
-
-                      <p>
-                        No product details
-                        available.
-                      </p>
-
                     )}
 
                   </div>
 
-                  {/* SUCCESS MESSAGE */}
-
-                  <p className="success-message">
-                    Your order has been
-                    placed successfully.
-                  </p>
-
-                  {/* CONTINUE SHOPPING */}
-
                   <button
+                    type="button"
                     onClick={() => {
                       setOrderSuccess(null);
                       navigate("/");
@@ -536,11 +569,9 @@ function App() {
             ) : (
 
               <section className="checkout">
-
                 <h2>
                   No order found.
                 </h2>
-
               </section>
 
             )

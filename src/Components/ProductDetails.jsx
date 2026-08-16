@@ -1,4 +1,8 @@
-import { useParams, useNavigate } from "react-router-dom";
+import {
+  useParams,
+  useNavigate,
+} from "react-router-dom";
+
 import products from "../data/products";
 
 function ProductDetails({ addToCart }) {
@@ -55,6 +59,27 @@ function ProductDetails({ addToCart }) {
 
           <h1>{product.name}</h1>
 
+          {/* Rating */}
+
+          <div className="details-rating">
+
+            <span className="rating-stars">
+              {"★".repeat(product.rating)}
+              {"☆".repeat(5 - product.rating)}
+            </span>
+
+            <span>
+              {product.rating} / 5
+            </span>
+
+            <span>
+              ({product.reviews} reviews)
+            </span>
+
+          </div>
+
+          {/* Prices */}
+
           <div className="details-prices">
 
             <span className="details-original-price">
@@ -67,15 +92,42 @@ function ProductDetails({ addToCart }) {
 
           </div>
 
+          {/* Description */}
+
           <p className="details-description">
-            Discover premium quality and stylish design
-            with this {product.name}. Perfect for your
-            everyday lifestyle.
+            {product.description}
           </p>
+
+          {/* Available Sizes */}
+
+          <div className="details-sizes">
+
+            <strong>
+              Available Sizes:
+            </strong>
+
+            <div className="details-size-list">
+
+              {product.sizes.map(
+                (size) => (
+                  <span key={size}>
+                    {size}
+                  </span>
+                )
+              )}
+
+            </div>
+
+          </div>
 
           <button
             className="details-cart-button"
-            onClick={() => addToCart(product)}
+            onClick={() =>
+              addToCart({
+                ...product,
+                size: product.sizes[0],
+              })
+            }
           >
             Add to Cart
           </button>

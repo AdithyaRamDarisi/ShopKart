@@ -51,9 +51,7 @@ function App() {
   const [wishlist, setWishlist] =
     useState(() => {
       const savedWishlist =
-        localStorage.getItem(
-          "wishlist"
-        );
+        localStorage.getItem("wishlist");
 
       return savedWishlist
         ? JSON.parse(savedWishlist)
@@ -119,7 +117,6 @@ function App() {
         );
 
       if (existingProduct) {
-
         return currentCart.map(
           (item) =>
             item.id === product.id &&
@@ -131,7 +128,6 @@ function App() {
                 }
               : item
         );
-
       }
 
       return [
@@ -148,10 +144,7 @@ function App() {
   // INCREASE
   // =========================
 
-  function increaseQuantity(
-    id,
-    size
-  ) {
+  function increaseQuantity(id, size) {
     setCart((currentCart) =>
       currentCart.map((item) =>
         item.id === id &&
@@ -170,10 +163,7 @@ function App() {
   // DECREASE
   // =========================
 
-  function decreaseQuantity(
-    id,
-    size
-  ) {
+  function decreaseQuantity(id, size) {
     setCart((currentCart) =>
       currentCart
         .map((item) =>
@@ -196,10 +186,7 @@ function App() {
   // REMOVE
   // =========================
 
-  function removeFromCart(
-    id,
-    size
-  ) {
+  function removeFromCart(id, size) {
     setCart((currentCart) =>
       currentCart.filter(
         (item) =>
@@ -265,9 +252,7 @@ function App() {
   // ORDER PLACED
   // =========================
 
-  function handleOrderPlaced(
-    orderDetails
-  ) {
+  function handleOrderPlaced(orderDetails) {
     const orderId =
       "SK-" +
       Math.floor(
@@ -319,7 +304,9 @@ function App() {
 
       <Routes>
 
-        {/* HOME */}
+        {/* =========================
+            HOME
+        ========================= */}
 
         <Route
           path="/"
@@ -338,7 +325,9 @@ function App() {
           }
         />
 
-        {/* CART */}
+        {/* =========================
+            CART
+        ========================= */}
 
         <Route
           path="/cart"
@@ -361,33 +350,33 @@ function App() {
           }
         />
 
-        {/* CHECKOUT */}
+        {/* =========================
+            CHECKOUT
+        ========================= */}
 
         <Route
           path="/checkout"
           element={
             cart.length === 0 ? (
-
               <section className="checkout">
                 <h2>
                   Your cart is empty.
                 </h2>
               </section>
-
             ) : (
-
               <Checkout
                 cart={cart}
                 onOrderPlaced={
                   handleOrderPlaced
                 }
               />
-
             )
           }
         />
 
-        {/* PRODUCT DETAILS */}
+        {/* =========================
+            PRODUCT DETAILS
+        ========================= */}
 
         <Route
           path="/product/:id"
@@ -398,7 +387,9 @@ function App() {
           }
         />
 
-        {/* LOGIN */}
+        {/* =========================
+            LOGIN
+        ========================= */}
 
         <Route
           path="/login"
@@ -409,16 +400,26 @@ function App() {
           }
         />
 
-        {/* ORDERS */}
+        {/* =========================
+            ORDERS - PROTECTED
+        ========================= */}
 
         <Route
           path="/orders"
           element={
-            <OrderHistory />
+            user ? (
+              <OrderHistory />
+            ) : (
+              <Login
+                setUser={setUser}
+              />
+            )
           }
         />
 
-        {/* WISHLIST */}
+        {/* =========================
+            WISHLIST
+        ========================= */}
 
         <Route
           path="/wishlist"
@@ -433,7 +434,9 @@ function App() {
           }
         />
 
-        {/* ORDER SUCCESS */}
+        {/* =========================
+            ORDER SUCCESS
+        ========================= */}
 
         <Route
           path="/order-success"
@@ -475,6 +478,7 @@ function App() {
                   <div className="order-details">
 
                     <div className="order-detail-row">
+
                       <span>
                         Order Total
                       </span>
@@ -485,9 +489,11 @@ function App() {
                           orderSuccess.total
                         }
                       </strong>
+
                     </div>
 
                     <div className="order-detail-row">
+
                       <span>
                         Payment Method
                       </span>
@@ -497,6 +503,7 @@ function App() {
                           orderSuccess.paymentMethod
                         }
                       </strong>
+
                     </div>
 
                   </div>
@@ -569,9 +576,11 @@ function App() {
             ) : (
 
               <section className="checkout">
+
                 <h2>
                   No order found.
                 </h2>
+
               </section>
 
             )

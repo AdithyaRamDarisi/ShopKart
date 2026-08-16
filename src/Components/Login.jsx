@@ -14,12 +14,16 @@ function Login({ setUser }) {
     e.preventDefault();
 
     if (!username || !email || !password) {
-      setError("Please enter username, email and password.");
+      setError(
+        "Please enter username, email and password."
+      );
       return;
     }
 
     if (password.length < 6) {
-      setError("Password must be at least 6 characters.");
+      setError(
+        "Password must be at least 6 characters."
+      );
       return;
     }
 

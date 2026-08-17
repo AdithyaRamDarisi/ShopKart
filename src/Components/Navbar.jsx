@@ -1,3 +1,4 @@
+import { useState } from "react";
 import {
   Link,
   useNavigate,
@@ -11,49 +12,47 @@ function Navbar({
 }) {
   const navigate = useNavigate();
 
+  const [showSearch, setShowSearch] = useState(false);
+  const [searchValue, setSearchValue] = useState("");
+
   const cartCount = cart.reduce(
     (total, product) =>
       total + product.quantity,
     0
   );
 
-  function handleProductsClick(e) {
+  function handleSearchSubmit(e) {
     e.preventDefault();
 
-    if (
-      window.location.pathname === "/"
-    ) {
-      document
-        .getElementById("products")
-        ?.scrollIntoView({
-          behavior: "smooth",
-          block: "start",
-        });
-    } else {
-      navigate("/");
+    const search = searchValue.trim();
 
-      setTimeout(() => {
-        document
-          .getElementById("products")
-          ?.scrollIntoView({
-            behavior: "smooth",
-            block: "start",
-          });
-      }, 100);
+    if (!search) {
+      return;
     }
+
+    setShowSearch(false);
+
+    navigate(
+      `/?search=${encodeURIComponent(search)}#products`
+    );
+
+    setSearchValue("");
+  }
+
+  function handleSearchClick() {
+    setShowSearch((current) => !current);
   }
 
   function handleLogout() {
     localStorage.removeItem("user");
-
     setUser(null);
-
     navigate("/");
   }
 
   return (
     <nav className="navbar">
 
+      {/* LOGO */}
       <Link
         to="/"
         className="navbar-logo"
@@ -61,87 +60,134 @@ function Navbar({
         ShopKart
       </Link>
 
+      {/* MAIN NAVIGATION */}
       <ul className="navbar-links">
-
-        {/* Home */}
 
         <li>
           <Link to="/">
-            Home
+            HOME
           </Link>
         </li>
-
-        {/* Products */}
 
         <li>
-          <a
-            href="#products"
-            onClick={handleProductsClick}
-          >
-            Products
-          </a>
+          <Link to="/?category=Men#products">
+            MEN
+          </Link>
         </li>
 
-        {/* Cart */}
+        <li>
+          <Link to="/?category=Women#products">
+            WOMEN
+          </Link>
+        </li>
 
-        <li className="nav-cart">
+        <li>
+          <Link to="/?category=Kids#products">
+            KIDS
+          </Link>
+        </li>
+
+        <li>
+          <Link to="/?new=true#products">
+            NEW ARRIVALS
+          </Link>
+        </li>
+
+        <li>
           <Link
-            to="/cart"
-            className="cart-link"
+            to="/?sale=true#products"
+            className="sale-link"
           >
-            🛒 Cart ({cartCount})
+            SALE
           </Link>
         </li>
-
-        {/* Wishlist */}
-
-        <li className="nav-wishlist">
-          <Link to="/wishlist">
-            ♡ Wishlist ({wishlist.length})
-          </Link>
-        </li>
-
-        {/* Logged In User */}
-
-        {user ? (
-          <>
-            {/* My Orders */}
-
-            <li className="nav-orders">
-              <Link to="/orders">
-                My Orders
-              </Link>
-            </li>
-
-            {/* Welcome */}
-
-            <li className="welcome-user">
-              Welcome, {user.username} 👋
-            </li>
-
-            {/* Logout */}
-
-            <li>
-              <button
-                type="button"
-                className="logout-button"
-                onClick={handleLogout}
-              >
-                Logout
-              </button>
-            </li>
-          </>
-        ) : (
-          /* Login */
-
-          <li>
-            <Link to="/login">
-              Login
-            </Link>
-          </li>
-        )}
 
       </ul>
+
+      {/* RIGHT SIDE */}
+      <div className="navbar-actions">
+
+        {/* SEARCH */}
+        <div className="navbar-search">
+
+          <button
+            type="button"
+            className="search-button"
+            onClick={handleSearchClick}
+            aria-label="Search"
+          >
+            🔍
+          </button>
+
+          {showSearch && (
+            <form
+              className="search-dropdown"
+              onSubmit={handleSearchSubmit}
+            >
+              <input
+                type="text"
+                autoFocus
+                placeholder="Search for products..."
+                value={searchValue}
+                onChange={(e) =>
+                  setSearchValue(e.target.value)
+                }
+              />
+
+              <button type="submit">
+                Search
+              </button>
+            </form>
+          )}
+
+        </div>
+
+        {/* WISHLIST */}
+        <Link
+          to="/wishlist"
+          className="nav-icon-link"
+          aria-label="Wishlist"
+        >
+          ♡
+        </Link>
+
+        {/* CART */}
+        <Link
+          to="/cart"
+          className="nav-icon-link"
+          aria-label="Cart"
+        >
+          🛍️
+        </Link>
+
+        {/* LOGIN / USER */}
+        {user ? (
+          <>
+            <Link
+              to="/orders"
+              className="nav-login"
+            >
+              Orders
+            </Link>
+
+            <button
+              type="button"
+              className="logout-button"
+              onClick={handleLogout}
+            >
+              Logout
+            </button>
+          </>
+        ) : (
+          <Link
+            to="/login"
+            className="nav-login"
+          >
+            Login
+          </Link>
+        )}
+
+      </div>
 
     </nav>
   );

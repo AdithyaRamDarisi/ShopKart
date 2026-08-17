@@ -2,10 +2,25 @@ import { useNavigate } from "react-router-dom";
 
 function Wishlist({
   wishlist,
-  removeFromWishlist,
+  toggleWishlist,
   addToCart,
 }) {
   const navigate = useNavigate();
+
+  function handleAddToCart(product) {
+    if (!product.sizes || product.sizes.length === 0) {
+      addToCart(product);
+      return;
+    }
+
+    // No size selector on the wishlist card, so default
+    // to the first available size rather than adding
+    // an item with size: undefined.
+    addToCart({
+      ...product,
+      size: product.sizes[0],
+    });
+  }
 
   return (
     <section className="wishlist">
@@ -59,7 +74,7 @@ function Wishlist({
               <button
                 className="wishlist-remove"
                 onClick={() =>
-                  removeFromWishlist(product.id)
+                  toggleWishlist(product)
                 }
                 title="Remove from wishlist"
               >
@@ -104,7 +119,7 @@ function Wishlist({
                 {/* ADD TO CART */}
                 <button
                   onClick={() =>
-                    addToCart(product)
+                    handleAddToCart(product)
                   }
                 >
                   Add to Cart

@@ -1,4 +1,8 @@
 import { useState } from "react";
+import {
+  useSearchParams,
+} from "react-router-dom";
+
 import products from "../data/products";
 import ProductCard from "./ProductCard";
 
@@ -7,9 +11,22 @@ function Products({
   wishlist = [],
   toggleWishlist,
 }) {
-  const [search, setSearch] = useState("");
-  const [category, setCategory] = useState("All");
-  const [sort, setSort] = useState("default");
+  const [searchParams] = useSearchParams();
+
+  const urlSearch =
+    searchParams.get("search") || "";
+
+  const urlCategory =
+    searchParams.get("category") || "All";
+
+  const [search, setSearch] =
+    useState(urlSearch);
+
+  const [category, setCategory] =
+    useState(urlCategory);
+
+  const [sort, setSort] =
+    useState("default");
 
   // =========================
   // CATEGORIES
@@ -28,8 +45,9 @@ function Products({
   // FILTER PRODUCTS
   // =========================
 
-  let filteredProducts = products.filter(
-    (product) => {
+  let filteredProducts =
+    products.filter((product) => {
+
       const matchesSearch =
         product.name
           .toLowerCase()
@@ -45,34 +63,37 @@ function Products({
         matchesSearch &&
         matchesCategory
       );
-    }
-  );
+    });
 
   // =========================
   // SORT PRODUCTS
   // =========================
 
   if (sort === "low-high") {
-  filteredProducts.sort(
-    (a, b) => a.offerPrice - b.offerPrice
-  );
-}
+    filteredProducts.sort(
+      (a, b) =>
+        a.offerPrice - b.offerPrice
+    );
+  }
 
-if (sort === "high-low") {
-  filteredProducts.sort(
-    (a, b) => b.offerPrice - a.offerPrice
-  );
-}
+  if (sort === "high-low") {
+    filteredProducts.sort(
+      (a, b) =>
+        b.offerPrice - a.offerPrice
+    );
+  }
 
   if (sort === "a-z") {
-    filteredProducts.sort((a, b) =>
-      a.name.localeCompare(b.name)
+    filteredProducts.sort(
+      (a, b) =>
+        a.name.localeCompare(b.name)
     );
   }
 
   if (sort === "z-a") {
-    filteredProducts.sort((a, b) =>
-      b.name.localeCompare(a.name)
+    filteredProducts.sort(
+      (a, b) =>
+        b.name.localeCompare(a.name)
     );
   }
 
@@ -82,30 +103,23 @@ if (sort === "high-low") {
       className="products"
     >
 
-      {/* =========================
-          HEADER
-      ========================= */}
-
+      {/* HEADER */}
       <div className="products-header">
 
         <p>
-          OUR COLLECTION
+          SHOPKART COLLECTION
         </p>
 
         <h2>
-          Featured Products
+          Discover Your Style
         </h2>
 
       </div>
 
-      {/* =========================
-          SEARCH & FILTER
-      ========================= */}
-
+      {/* CONTROLS */}
       <div className="product-controls">
 
-        {/* Search */}
-
+        {/* SEARCH */}
         <input
           type="text"
           placeholder="Search products..."
@@ -115,8 +129,7 @@ if (sort === "high-low") {
           }
         />
 
-        {/* Category */}
-
+        {/* CATEGORY */}
         <select
           value={category}
           onChange={(e) =>
@@ -133,8 +146,7 @@ if (sort === "high-low") {
           ))}
         </select>
 
-        {/* Sort */}
-
+        {/* SORT */}
         <select
           value={sort}
           onChange={(e) =>
@@ -160,15 +172,11 @@ if (sort === "high-low") {
           <option value="z-a">
             Name: Z → A
           </option>
-
         </select>
 
       </div>
 
-      {/* =========================
-          PRODUCT GRID
-      ========================= */}
-
+      {/* PRODUCT GRID */}
       <div className="product-grid">
 
         {filteredProducts.length > 0 ? (
